@@ -3,7 +3,6 @@ from email.message import EmailMessage
 import os
 import smtplib
 
-import psycopg
 from dotenv import load_dotenv
 from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,8 +12,8 @@ load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-if not DATABASE_URL:
-    raise RuntimeError("DATABASE_URL is not configured in .env")
+# Database is optional for development
+USE_DATABASE = bool(DATABASE_URL)
 
 
 app = FastAPI(
@@ -69,10 +68,17 @@ class ContactResponse(BaseModel):
 # ---------------------------------------------------------
 
 def get_connection():
-    return psycopg.connect(DATABASE_URL)
+    if USE_DATABASE:
+        import psycopg
+        return psycopg.connect(DATABASE_URL)
+    return None
 
 
 def init_db() -> None:
+    if not USE_DATABASE:
+        print("Database not configured - running in development mode without database")
+        return
+
     with get_connection() as conn:
         conn.execute(
             """
@@ -191,45 +197,59 @@ def contact(payload: ContactRequest):
         }
 
     created_at = datetime.now(timezone.utc)
+    inquiry_id = 0
 
-    with get_connection() as conn:
+    if USE_DATABASE:
+        with get_connection() as conn:
 
-        cursor = conn.execute(
-            """
-            INSERT INTO inquiries (
-                name,
-                organization,
-                email,
-                phone,
-                service,
-                message,
-                created_at
+            cursor = conn.execute(
+                """
+                INSERT INTO inquiries (
+                    name,
+                    organization,
+                    email,
+                    phone,
+                    service,
+                    message,
+                    created_at
+                )
+                VALUES (
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s
+                )
+                RETURNING id
+                """,
+                (
+                    payload.name.strip(),
+                    payload.organization.strip(),
+                    str(payload.email),
+                    payload.phone.strip(),
+                    payload.service.strip(),
+                    payload.message.strip(),
+                    created_at,
+                ),
             )
-            VALUES (
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s
-            )
-            RETURNING id
-            """,
-            (
-                payload.name.strip(),
-                payload.organization.strip(),
-                str(payload.email),
-                payload.phone.strip(),
-                payload.service.strip(),
-                payload.message.strip(),
-                created_at,
-            ),
-        )
 
-        inquiry_id = cursor.fetchone()[0]
+            inquiry_id = cursor.fetchone()[0]
 
-        conn.commit()
+            conn.commit()
+    else:
+        # Log submission in development mode
+        print(f"\n{'='*60}")
+        print(f"NEW CONTACT FORM SUBMISSION")
+        print(f"{'='*60}")
+        print(f"Name: {payload.name}")
+        print(f"Organization: {payload.organization}")
+        print(f"Email: {payload.email}")
+        print(f"Phone: {payload.phone}")
+        print(f"Service: {payload.service}")
+        print(f"Message: {payload.message}")
+        print(f"{'='*60}\n")
 
     # Email notification
     try:
@@ -265,6 +285,9 @@ def inquiries(
             status_code=401,
             detail="Unauthorized",
         )
+
+    if not USE_DATABASE:
+        return []
 
     with get_connection() as conn:
 

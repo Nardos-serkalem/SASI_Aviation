@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { CheckCircle2, LoaderCircle } from 'lucide-react'
 
-const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace(/\/$/, '')
+const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:3000').replace(/\/$/, '')
 
 export default function ContactForm() {
   const [status, setStatus] = useState<'idle'|'loading'|'success'|'error'>('idle')

@@ -85,14 +85,14 @@ export default function Approach() {
             title="Four stages. One operational objective."
           />
 
-          <div className="process-grid">
-            {items.map((item) => {
+          <div className="approach-grid">
+            {items.map((item, index) => {
               const Icon = item.icon
 
               return (
-                <article className="process-card" key={item.number}>
-                  <div className="process-card-top">
-                    <span className="process-number">{item.number}</span>
+                <article className="approach-card" key={item.number}>
+                  <span className="approach-card-number">0{index + 1}</span>
+                  <div className="approach-card-icon">
                     <Icon size={25} strokeWidth={1.6} />
                   </div>
 

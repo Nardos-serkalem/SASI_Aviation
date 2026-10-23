@@ -16,7 +16,7 @@ type ServiceGridProps = {
 export default function ServiceGrid({ services }: ServiceGridProps) {
   return (
     <div className="service-grid">
-      {services.map((service) => (
+      {services.map((service, index) => (
         <Link
           key={service.slug}
           to={`/services/${service.slug}`}
@@ -25,18 +25,15 @@ export default function ServiceGrid({ services }: ServiceGridProps) {
         >
           <div className="service-card-image">
             <img src={service.image} alt="" loading="lazy" />
-            <div className="service-image-overlay" />
+            <span className="service-number">{String(index + 1).padStart(2, '0')}</span>
           </div>
 
           <div className="service-card-content">
             <h3>{service.title}</h3>
             <p>{service.description}</p>
 
-            <div className="service-card-bottom">
-              <span className="service-link">Explore service</span>
-              <span className="service-arrow" aria-hidden="true">
-                <ArrowUpRight size={19} />
-              </span>
+            <div className="service-arrow" aria-hidden="true">
+              <ArrowUpRight size={19} />
             </div>
           </div>
         </Link>

@@ -10,36 +10,42 @@ import runway from '../assets/runway-break.jpg'
 
 const services = [
   {
+    slug: 'pilot-training',
     title: 'Pilot Training Advisory',
     description:
       'Strategic guidance on pilot training programmes, competency development, training standards and operational readiness.',
     image: runway,
   },
   {
+    slug: 'airline-startup-support',
     title: 'Airline Start-Up Support',
     description:
       'Support for airline planning, certification preparation, operational setup and launch readiness.',
     image: runway,
   },
   {
+    slug: 'safety-compliance',
     title: 'Safety & Compliance',
     description:
       'Practical guidance to strengthen safety management, compliance processes and alignment with international aviation standards.',
     image: runway,
   },
   {
+    slug: 'cabin-training',
     title: 'Cabin Training',
     description:
       'Cabin crew development focused on safety procedures, emergency preparedness, service quality and operational performance.',
     image: runway,
   },
   {
+    slug: 'maintenance-training',
     title: 'Maintenance Training',
     description:
       'Technical training support designed to strengthen maintenance capability, reliability and professional standards.',
     image: runway,
   },
   {
+    slug: 'aviation-operations',
     title: 'Aviation Operations',
     description:
       'Operational advisory to improve efficiency, organisational performance, safety and sustainable aviation growth.',

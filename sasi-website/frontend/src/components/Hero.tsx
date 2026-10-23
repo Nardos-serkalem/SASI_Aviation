@@ -48,12 +48,12 @@ export default function Hero() {
           </p>
 
           <div className="hero-actions">
-            <Link className="button button--light" to="/contact">
+            <Link className="button button-light" to="/contact">
               Start a conversation
               <ArrowUpRight size={17} />
             </Link>
 
-            <Link className="button button--ghost" to="/services">
+            <Link className="button button-secondary" to="/services">
               Explore services
             </Link>
           </div>
